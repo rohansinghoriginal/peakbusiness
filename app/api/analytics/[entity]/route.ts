@@ -4,6 +4,10 @@ import { jsonError, requireUserId } from '@/lib/api'
 import { asNumber } from '@/lib/business'
 import { getSupabaseAdmin } from '@/lib/supabase-server'
 
+async function handleHealth(request: Request) {
+  return NextResponse.json({ ok: true, service: 'peak-business', timestamp: new Date().toISOString() })
+}
+
 async function handleAnalytics(request: Request, ownerUserId: string) {
   try {
     const { searchParams } = new URL(request.url)
@@ -150,8 +154,10 @@ async function handleDashboard(request: Request, ownerUserId: string) {
 
 export async function GET(request: Request, { params }: { params: Promise<{ entity: string }> }) {
   try {
-    const ownerUserId = await requireUserId()
     const { entity } = await params
+    if (entity === 'health') return handleHealth(request)
+
+    const ownerUserId = await requireUserId()
 
     switch (entity) {
       case 'dashboard':
@@ -166,8 +172,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ enti
 
 export async function POST(request: Request, { params }: { params: Promise<{ entity: string }> }) {
   try {
-    const ownerUserId = await requireUserId()
     const { entity } = await params
+    if (entity === 'health') return handleHealth(request)
+
+    const ownerUserId = await requireUserId()
 
     switch (entity) {
       case 'dashboard':
