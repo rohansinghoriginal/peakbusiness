@@ -1,0 +1,5 @@
+import { db } from "hatchable";
+export const access="user";
+export const methods=["POST"];
+const tables=['skus','materials','sku_materials','business_orders','sku_transactions','material_transactions','borrowings','business_expenses','suppliers','material_purchases','sales_import_batches'];
+export default async function(req,res){const owner=req.user.id,url=process.env.SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;if(!url||!key)return res.status(503).json({error:'Supabase is not configured in the project setup.'});const base=String(url).replace(/\/$/,'');const synced=[];for(const t of tables){const q=await db.query(`SELECT * FROM ${t} WHERE created_by=$1`,[owner]);if(!q.rows.length){synced.push({table:t,rows:0});continue}const r=await fetch(base+'/rest/v1/'+t,{method:'POST',headers:{'Content-Type':'application/json',apikey:key,Authorization:'Bearer '+key,Prefer:'resolution=merge-duplicates'},body:JSON.stringify(q.rows)});if(!r.ok)return res.status(502).json({error:'Supabase sync failed',table:t,detail:(await r.text()).slice(0,500),synced});synced.push({table:t,rows:q.rows.length})}res.json({ok:true,synced,at:new Date().toISOString()});}

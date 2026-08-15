@@ -1,0 +1,1 @@
+CREATE TABLE business_expenses (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), created_by text NOT NULL, expense_date date NOT NULL DEFAULT current_date, category text NOT NULL, amount numeric(12,2) NOT NULL DEFAULT 0, description text, platform text, created_at timestamptz NOT NULL DEFAULT now())

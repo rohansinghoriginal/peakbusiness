@@ -1,0 +1,1 @@
+ALTER TABLE business_orders ADD COLUMN source_file text

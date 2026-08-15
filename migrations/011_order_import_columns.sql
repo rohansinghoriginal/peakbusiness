@@ -1,0 +1,1 @@
+ALTER TABLE business_orders ADD COLUMN line_key text NOT NULL DEFAULT ''

@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS business_orders_import_dedupe_idx ON business_orders(created_by,platform,line_key)

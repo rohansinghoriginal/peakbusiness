@@ -1,0 +1,24 @@
+[auth]
+enabled = true
+providers = ["email", "google"]
+
+[[secret]]
+key = "OPENROUTER_API_KEY"
+provider = "custom"
+required = false
+expose = true
+description = "OpenRouter API key for flexible sales-report column mapping."
+
+[[secret]]
+key = "SUPABASE_URL"
+provider = "custom"
+required = true
+expose = true
+description = "Supabase project URL for the primary application database."
+
+[[secret]]
+key = "SUPABASE_SERVICE_ROLE_KEY"
+provider = "custom"
+required = true
+expose = true
+description = "Supabase service-role key for server-side database access. Never expose to browser code."

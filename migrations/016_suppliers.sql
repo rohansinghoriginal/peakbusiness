@@ -1,0 +1,1 @@
+CREATE TABLE suppliers (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), created_by text NOT NULL, supplier_name text NOT NULL, address text, gstin text, phone text, email text, default_gst_rate numeric(5,2) NOT NULL DEFAULT 0, default_transport_cost numeric(12,2) NOT NULL DEFAULT 0, notes text, created_at timestamptz NOT NULL DEFAULT now(), UNIQUE(created_by,supplier_name))

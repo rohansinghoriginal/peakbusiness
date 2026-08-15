@@ -1,0 +1,4 @@
+import { db } from "hatchable";
+export const access="user";
+export const methods=["POST"];
+export default async function(req,res){const owner=req.user.id;const b=req.body||{};if(!b.material_id)return res.status(400).json({error:'material_id is required'});const {rows}=await db.query(`INSERT INTO material_transactions(created_by,txn_date,material_id,txn_type,qty_in,qty_out,unit_cost,reference,notes,source) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,'MANUAL') RETURNING *`,[owner,b.txn_date||new Date().toISOString().slice(0,10),b.material_id,b.txn_type||'Adjustment',Number(b.qty_in||0),Number(b.qty_out||0),Number(b.unit_cost||0),b.reference||null,b.notes||null]);res.json(rows[0]);}

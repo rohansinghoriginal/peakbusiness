@@ -1,0 +1,186 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   FIELD ALIASES - Canonical field name → list of possible header variations
+   ════════════════════════════════════════════════════════════════════════════ */
+
+export const fieldAliases: Record<string, string[]> = {
+  orderId: [
+    'order id', 'order_id', 'order number', 'order no', 'amazon order id',
+    'sale order number', 'sub order no', 'sub order number', 'sub-order id',
+    'order', 'invoice number', 'invoice no', 'bill no', 'name',
+  ],
+  lineKey: [
+    'line item id', 'line item', 'order item id', 'order_item_id', 'item id',
+    'sub order id', 'sub order no', 'sub_order_no', 'line key', 'line id',
+  ],
+  skuCode: [
+    'sku', 'sku code', 'seller sku', 'seller-sku', 'seller sku id',
+    'merchant sku', 'product sku', 'sku id', 'item sku', 'style id',
+    'product id', 'fsn', 'asin', 'item code',
+  ],
+  productName: [
+    'product name', 'product title', 'item name', 'item title', 'title',
+    'listing title', 'product', 'sku name', 'item description', 'description',
+    'product name / title', 'lineitem name',
+  ],
+  orderDate: [
+    'order date', 'purchase date', 'order created date', 'order date/time',
+    'order date and time', 'sale date', 'created date', 'date', 'invoice date',
+    'bill date', 'created at',
+  ],
+  qtyOrdered: [
+    'quantity', 'qty', 'quantity ordered', 'ordered quantity', 'order qty',
+    'units', 'item quantity', 'qty ordered', 'lineitem quantity', 'item-quantity',
+  ],
+  qtyDelivered: [
+    'quantity delivered', 'delivered quantity', 'shipped quantity',
+    'fulfilled quantity', 'quantity shipped', 'qty delivered', 'qty shipped',
+    'delivered qty', 'dispatched quantity',
+  ],
+  qtyReturned: [
+    'quantity returned', 'returned quantity', 'returns', 'qty returned',
+    'return quantity', 'return qty', 'rto qty',
+  ],
+  salePrice: [
+    'sale price', 'selling price', 'sale price/unit', 'selling price/unit',
+    'item price', 'product sale price', 'amount', 'unit price', 'price',
+    'meesho price', 'final_invoice_amount', 'lineitem price', 'taxable value',
+    'total amount', 'principal-amount',
+  ],
+  status: ['status', 'order status', 'item status', 'shipment status', 'flipkart_status', 'financial status', 'fulfillment status'],
+  deliveryDate: ['delivery date', 'delivered date', 'shipment date', 'ship date', 'fulfillment date', 'dispatch date'],
+  returnDate: ['return date', 'returned date'],
+  refundAmount: ['refund amount', 'refund', 'return amount', 'refunded amount', 'reversal amount'],
+  customerLocation: [
+    'customer location', 'customer city/state', 'ship city', 'ship-city',
+    'shipping city', 'ship to city', 'customer city', 'customer state',
+    'place of supply', 'city', 'state',
+  ],
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   ENTITY-SPECIFIC FIELD ALIASES
+   ════════════════════════════════════════════════════════════════════════════ */
+
+import { EntityType } from './types'
+
+export const entityFieldAliases: Record<EntityType, Record<string, string[]>> = {
+  orders: {
+    orderId: fieldAliases.orderId,
+    lineKey: fieldAliases.lineKey,
+    skuCode: fieldAliases.skuCode,
+    productName: fieldAliases.productName,
+    orderDate: fieldAliases.orderDate,
+    qtyOrdered: fieldAliases.qtyOrdered,
+    qtyDelivered: fieldAliases.qtyDelivered,
+    qtyReturned: fieldAliases.qtyReturned,
+    salePrice: fieldAliases.salePrice,
+    status: fieldAliases.status,
+    deliveryDate: fieldAliases.deliveryDate,
+    returnDate: fieldAliases.returnDate,
+    refundAmount: fieldAliases.refundAmount,
+    customerLocation: fieldAliases.customerLocation,
+  },
+  returns: {
+    orderId: fieldAliases.orderId,
+    lineKey: fieldAliases.lineKey,
+    skuCode: fieldAliases.skuCode,
+    productName: fieldAliases.productName,
+    orderDate: fieldAliases.orderDate,
+    qtyReturned: fieldAliases.qtyReturned,
+    returnDate: fieldAliases.returnDate,
+    refundAmount: fieldAliases.refundAmount,
+    status: fieldAliases.status,
+    returnReason: ['return reason', 'reason for return', 'rto reason', 'cancellation reason'],
+    customerLocation: fieldAliases.customerLocation,
+  },
+  settlement: {
+    orderId: fieldAliases.orderId,
+    lineKey: fieldAliases.lineKey,
+    skuCode: fieldAliases.skuCode,
+    productName: fieldAliases.productName,
+    orderDate: fieldAliases.orderDate,
+    salePrice: ['net amount', 'settlement amount', 'payout amount', 'disbursement amount', 'final amount'],
+    fee: ['fee', 'commission', 'marketplace fee', 'platform fee', 'service fee', 'transaction fee'],
+    tax: ['tax', 'gst', 'tcs', 'tds', 'tax amount'],
+    status: ['status', 'settlement status', 'payout status'],
+    settlementDate: ['settlement date', 'payout date', 'disbursement date', 'payment date'],
+  },
+  skus: {
+    skuCode: ['sku', 'sku code', 'seller sku', 'seller-sku', 'merchant sku', 'product sku', 'sku id', 'item sku', 'style id', 'product id', 'fsn', 'asin', 'item code'],
+    productName: ['product name', 'product title', 'item name', 'item title', 'title', 'listing title', 'product', 'sku name', 'item description', 'description'],
+    platform: ['platform', 'channel', 'marketplace', 'sales channel'],
+    sellingPrice: ['selling price', 'sale price', 'price', 'mrp', 'list price', 'unit price', 'standard price'],
+    costPerUnit: ['cost', 'cost per unit', 'unit cost', 'purchase cost', 'landed cost', 'cost price'],
+    openingStock: ['opening stock', 'initial stock', 'stock', 'quantity', 'qty', 'opening qty'],
+    reorderLevel: ['reorder level', 'reorder point', 'min stock', 'minimum stock', 'alert level'],
+    category: ['category', 'product category', 'type', 'product type'],
+    active: ['active', 'status', 'is active', 'enabled'],
+  },
+  materials: {
+    materialCode: ['material code', 'material id', 'material sku', 'item code', 'raw material code', 'rm code'],
+    materialName: ['material name', 'material', 'item name', 'raw material name', 'rm name'],
+    category: ['category', 'material category', 'type', 'material type'],
+    unit: ['unit', 'uom', 'unit of measure', 'measurement unit'],
+    openingStock: ['opening stock', 'initial stock', 'stock', 'quantity', 'qty', 'opening qty'],
+    reorderLevel: ['reorder level', 'reorder point', 'min stock', 'minimum stock', 'alert level'],
+    avgUnitCost: ['avg unit cost', 'average cost', 'unit cost', 'cost per unit', 'standard cost'],
+    preferredVendor: ['preferred vendor', 'supplier', 'vendor', 'preferred supplier'],
+  },
+  borrowings: {
+    direction: ['direction', 'type', 'borrow/lend', 'transaction type'],
+    txnDate: ['date', 'transaction date', 'txn date', 'borrow date', 'lend date'],
+    counterparty: ['counterparty', 'party', 'person', 'company', 'friend', 'name', 'borrower', 'lender'],
+    itemType: ['item type', 'type', 'item category', 'material/product'],
+    itemCode: ['item code', 'item id', 'sku', 'material code', 'product code'],
+    itemName: ['item name', 'item', 'product name', 'material name', 'description'],
+    quantity: ['quantity', 'qty', 'amount', 'units'],
+    unitCost: ['unit cost', 'cost', 'price per unit', 'rate'],
+    dueDate: ['due date', 'return date', 'expected return', 'deadline'],
+    returnDate: ['return date', 'actual return date', 'returned date'],
+    settlementStatus: ['settlement status', 'status', 'settled', 'open', 'closed'],
+  },
+  purchases: {
+    purchaseDate: ['purchase date', 'date', 'order date', 'invoice date'],
+    supplierId: ['supplier', 'vendor', 'supplier name', 'vendor name', 'supplier id', 'vendor id'],
+    materialId: ['material', 'material code', 'item code', 'raw material', 'product'],
+    quantity: ['quantity', 'qty', 'ordered qty', 'units'],
+    unit: ['unit', 'uom', 'unit of measure'],
+    unitPrice: ['unit price', 'price', 'rate', 'cost per unit', 'purchase price'],
+    gstRate: ['gst', 'gst rate', 'tax rate', 'tax %'],
+    transportCost: ['transport', 'freight', 'shipping', 'transport cost', 'delivery cost'],
+    invoiceNo: ['invoice no', 'invoice number', 'bill no', 'bill number', 'po number'],
+  },
+  expenses: {
+    expenseDate: ['date', 'expense date', 'transaction date'],
+    category: ['category', 'expense category', 'type', 'expense type'],
+    amount: ['amount', 'cost', 'expense amount', 'total', 'value'],
+    description: ['description', 'details', 'narration', 'purpose', 'reason', 'note'],
+    platform: ['platform', 'channel', 'marketplace', 'sales channel'],
+  },
+  suppliers: {
+    supplierName: ['supplier name', 'vendor name', 'company name', 'name', 'supplier', 'vendor'],
+    address: ['address', 'location', 'full address', 'street address'],
+    gstin: ['gstin', 'gst number', 'gst id', 'gstno', 'gst no'],
+    phone: ['phone', 'mobile', 'contact', 'telephone', 'phone number'],
+    email: ['email', 'e-mail', 'email address', 'mail'],
+    defaultGstRate: ['default gst', 'gst rate', 'tax rate', 'standard gst'],
+    defaultTransportCost: ['default transport', 'transport cost', 'freight', 'standard transport'],
+  },
+  sku_materials: {
+    skuCode: fieldAliases.skuCode,
+    materialCode: ['material code', 'material id', 'material sku', 'item code', 'raw material code', 'rm code'],
+    qtyPerUnit: ['qty per unit', 'quantity per unit', 'units per', 'consumption', 'usage per unit', 'qty/unit'],
+    wastePct: ['waste %', 'waste percentage', 'wastage', 'loss %', 'waste pct'],
+  },
+  material_transactions: {
+    txnDate: ['date', 'transaction date', 'txn date'],
+    materialId: ['material', 'material code', 'item code', 'raw material', 'material id'],
+    txnType: ['type', 'transaction type', 'movement type', 'txn type', 'in/out'],
+    qtyIn: ['qty in', 'quantity in', 'received', 'inward', 'stock in', 'in qty'],
+    qtyOut: ['qty out', 'quantity out', 'issued', 'outward', 'stock out', 'consumed', 'out qty'],
+    unitCost: ['unit cost', 'cost', 'rate', 'price'],
+    reference: ['reference', 'ref', 'order id', 'po number', 'invoice no', 'batch'],
+    source: ['source', 'origin', 'from', 'transaction source'],
+  },
+  unknown: {},
+}

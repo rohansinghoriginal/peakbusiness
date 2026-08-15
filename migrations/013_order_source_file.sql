@@ -1,0 +1,1 @@
+ALTER TABLE business_orders ADD COLUMN import_batch_id uuid REFERENCES sales_import_batches(id)

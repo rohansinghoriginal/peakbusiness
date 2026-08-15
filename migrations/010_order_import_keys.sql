@@ -1,0 +1,1 @@
+ALTER TABLE business_orders DROP CONSTRAINT business_orders_created_by_order_id_platform_key

@@ -1,0 +1,4 @@
+import { db } from "hatchable";
+export const access="user";
+export const methods=["GET","POST"];
+export default async function(req,res){const owner=req.user.id;if(req.method==="GET"){const {rows}=await db.query(`SELECT * FROM business_expenses WHERE created_by=$1 ORDER BY expense_date DESC,created_at DESC LIMIT 100`,[owner]);return res.json(rows)}const b=req.body||{};if(!b.category||Number(b.amount||0)<=0)return res.status(400).json({error:"Category and positive amount are required"});const {rows}=await db.query(`INSERT INTO business_expenses (created_by,expense_date,category,amount,description,platform) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,[owner,b.expense_date||new Date().toISOString().slice(0,10),b.category,Number(b.amount),b.description||null,b.platform||null]);res.json(rows[0]);}

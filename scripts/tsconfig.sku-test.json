@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": ".test-dist",
+    "skipLibCheck": true
+  },
+  "include": ["./sku-dedup-test.ts", "../src/lib/sku-master.ts", "../src/lib/business.ts"]
+}

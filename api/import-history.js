@@ -1,0 +1,4 @@
+import { db } from "hatchable";
+export const access="user";
+export const methods=["GET","DELETE"];
+export default async function(req,res){const owner=req.user.id;if(req.method==='GET'){const {rows}=await db.query('SELECT id,platform,file_name,imported_at,total_rows,imported_rows,duplicate_rows,unmatched_rows,error_rows FROM sales_import_batches WHERE created_by=$1 ORDER BY imported_at DESC LIMIT 50',[owner]);return res.json(rows)}const id=req.body?.id||req.query?.id;if(!id)return res.status(400).json({error:'id is required'});const result=await db.query('DELETE FROM sales_import_batches WHERE id=$1 AND created_by=$2',[id,owner]);return res.json({deleted:result.rowCount>0});}

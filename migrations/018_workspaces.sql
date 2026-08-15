@@ -1,0 +1,1 @@
+CREATE TABLE app_workspaces (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), owner_user_id text UNIQUE NOT NULL, legacy_owner_id text NULL, created_at timestamptz NOT NULL DEFAULT now(), updated_at timestamptz NOT NULL DEFAULT now());
