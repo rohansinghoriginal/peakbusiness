@@ -4,6 +4,7 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-08-14",
   "compatibility_flags": ["nodejs_compat"],
+  "account_id": "d78553f603ed2bf680cf44cd2f4e30ca",
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
