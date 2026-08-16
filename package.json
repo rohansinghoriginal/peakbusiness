@@ -13,10 +13,6 @@
     "typecheck": "tsc --noEmit",
     "lint": "next lint"
   },
-  "allowScripts": [
-    "esbuild",
-    "workerd"
-  ],
   "devDependencies": {
     "@types/node": "22.19.1",
     "@types/react": "19.2.7",
