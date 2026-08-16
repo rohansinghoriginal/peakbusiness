@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server'
+import { getCurrentUserId } from '@/lib/supabase-server'
 import { NextResponse } from 'next/server'
 
 export class ApiError extends Error {
@@ -8,7 +8,7 @@ export class ApiError extends Error {
 }
 
 export async function requireUserId(): Promise<string> {
-  const { userId } = await auth()
+  const userId = await getCurrentUserId()
   if (!userId) throw new ApiError('You must be signed in to use this resource.', 401)
   return userId
 }

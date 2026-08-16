@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { ClerkProvider } from '@clerk/nextjs'
 import Script from 'next/script'
 
 import { appConfig } from '@/lib/app-config'
@@ -50,7 +49,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <div className="bga-03__glow" />
         </div>
         <ThemeProvider>
-          <ClerkProvider>{children}</ClerkProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>

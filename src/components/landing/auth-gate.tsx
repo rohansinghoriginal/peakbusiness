@@ -1,16 +1,18 @@
 'use client'
 
-import { useUser } from '@clerk/nextjs'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase-client'
 
 export function AuthGate() {
-  const { user, isLoaded } = useUser()
   const router = useRouter()
 
   useEffect(() => {
-    if (isLoaded && user) router.replace('/overview')
-  }, [isLoaded, user, router])
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user: userData } }: { data: { user: any } }) => {
+      if (userData) router.replace('/overview')
+    })
+  }, [router])
 
   return null
 }
