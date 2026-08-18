@@ -5,15 +5,12 @@
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["@clerk/nextjs", "@supabase/supabase-js", "@supabase/ssr"]
+  directory = "netlify/functions"
+  included_files = ["app/api/**/*"]
 
 # Enable Netlify Next.js plugin for proper Next.js deployment
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# Explicitly configure API routes as functions
-[[functions]]
-  directory = "netlify/functions"
-  included_files = ["app/api/**/*"]
 
 # Disable secrets scanning for false positives
 [build.environment]
