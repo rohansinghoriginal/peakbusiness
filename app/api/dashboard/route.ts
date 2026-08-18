@@ -135,8 +135,6 @@ export async function GET() {
     }
 
     return NextResponse.json({
-      skuMargins,
-      platformBreakdown,
       kpis: {
         totalOrders,
         totalDeliveredUnits,
@@ -156,8 +154,8 @@ export async function GET() {
       returnAnalytics,
       lowStock: (lowStock.data || []).map(s => ({
         ...s,
-        stock_value: Number(s.current_stock || 0) * Number(s.cost_per_unit || 0)
-      }),
+        stock_value: Number(s.current_stock || 0) * Number(s.cost_per_unit || 0),
+      })),
       recentOrders: (orders.data || []).slice(0, 10),
       expenses: expenses.data || [],
       borrowings: borrowings.data || [],
