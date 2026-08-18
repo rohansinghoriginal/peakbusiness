@@ -128,7 +128,7 @@ export function OperationsConsole() {
         <div className="brand"><span className="brand-mark">PB</span><span><b>Peak</b> Business</span></div>
         <div className="workspace-chip"><span className="status-dot" />Operations workspace</div>
         <nav aria-label="Primary navigation">{navItems.map((item) => <button key={item.id} data-tour={item.id} className={`nav-item ${view === item.id ? 'active' : ''}`} onClick={() => setView(item.id)}><span className="nav-glyph">{item.label.slice(0, 1)}</span><span><b>{item.label}</b><small>{item.eyebrow}</small></span></button>)}</nav>
-        <div className="sidebar-foot"><p>Data is protected by Clerk + Supabase.</p><ThemeToggle showLabel /></div>
+        <div className="sidebar-foot"><p>Data is protected by Clerk auth + Supabase DB.</p><ThemeToggle showLabel /></div>
       </aside>
       <section className="main-stage">
         <header className="topbar"><div className="mobile-brand"><span className="brand-mark">PB</span>Peak Business</div><div className="topbar-right"><button className="refresh" onClick={() => void refresh()} disabled={loading}>{loading ? 'Refreshing…' : '↻ Refresh'}</button><Show when="signed-in"><UserButton appearance={{ elements: { avatarBox: 'avatar-box' } }} /></Show><Show when="signed-out"><SignInButton><Button>Sign in</Button></SignInButton><SignUpButton><Button className="primary">Create account</Button></SignUpButton></Show></div></header>
