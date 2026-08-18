@@ -23,6 +23,3 @@ jobs:
         run: npm run build
       - name: Run SKU dedup harness
         run: node scripts/sku-dedup-test-run.js
-      - name: Run basic lint (if exists)
-        run: |
-          if [ -f package.json ] && grep -q "lint" package.json; then npm run lint || true; else echo "no lint script"; fi
