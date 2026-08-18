@@ -5,6 +5,10 @@
 [functions]
   node_bundler = "esbuild"
 
+# Enable Netlify Next.js plugin for proper Next.js deployment
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 # Disable secrets scanning for false positives from node_modules (Clerk test fixtures)
 # and environment variables embedded in build output
 [build.environment]
