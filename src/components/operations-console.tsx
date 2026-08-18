@@ -1,7 +1,7 @@
 'use client'
 
+import { Show, SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs'
 import { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useState } from 'react'
-import { createClient } from '@/lib/supabase-client'
 
 import { appConfig } from '@/lib/app-config'
 import { asNumber, formatCurrency, formatNumber, toDateInput } from '@/lib/business'
@@ -90,28 +90,8 @@ function Modal({ title, children, onClose }: { title: string; children: React.Re
   return <div className="modal-backdrop" role="presentation" onMouseDown={onClose}><section className="modal" role="dialog" aria-modal="true" aria-label={title} onMouseDown={(event) => event.stopPropagation()}><div className="modal-header"><h2>{title}</h2><button className="icon-button" onClick={onClose} aria-label="Close">×</button></div>{children}</section></div>
 }
 
-function UserAvatar({ user, onSignOut }: { user: { email?: string | null; user_metadata?: { avatar_url?: string; full_name?: string } }; onSignOut: () => void }) {
-  if (!user) return null
-  const name = user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'User'
-  const avatar = user.user_metadata?.avatar_url
-  return (
-    <div className="user-avatar" title={user.email ?? ''} onClick={onSignOut}>
-      {avatar ? <img src={avatar} alt="" className="avatar-img" /> : <span className="avatar-initial">{name.charAt(0).toUpperCase()}</span>}
-      <span className="user-name">{name}</span>
-    </div>
-  )
-}
-
-function AuthButtons({ onSignIn, onSignUp }: { onSignIn: () => void; onSignUp: () => void }) {
-  return (
-    <div className="auth-buttons">
-      <button className="button ghost" onClick={onSignIn}>Sign in</button>
-      <button className="button primary" onClick={onSignUp}>Create account</button>
-    </div>
-  )
-}
-
 export function OperationsConsole() {
+  const { user, isLoaded } = useUser()
   const { theme, toggleTheme } = useTheme()
   const [view, setView] = useState<View>('overview')
   const [dashboard, setDashboard] = useState<Row>(initialDashboard)
@@ -119,18 +99,6 @@ export function OperationsConsole() {
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [composer, setComposer] = useState<string | null>(null)
-  const [user, setUser] = useState<{ email?: string | null; user_metadata?: { avatar_url?: string; full_name?: string } } | null>(null)
-  const [sessionLoading, setSessionLoading] = useState(true)
-
-  const supabase = createClient()
-
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: any) => {
-      setUser(session?.user ?? null)
-      setSessionLoading(false)
-    })
-    return () => subscription.unsubscribe()
-  }, [])
 
   const refresh = useCallback(async () => {
     setLoading(true)
@@ -154,37 +122,20 @@ export function OperationsConsole() {
     window.setTimeout(() => setNotice(''), 3400)
   }
 
-  const handleSignIn = () => {
-    window.location.href = '/sign-in'
-  }
-
-  const handleSignUp = () => {
-    window.location.href = '/sign-up'
-  }
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-    window.location.href = '/'
-  }
-
-  const isSignedIn = !!user
-  const isLoadingAuth = sessionLoading
-
   return (
     <main className="app-shell">
       <aside className="sidebar">
         <div className="brand"><span className="brand-mark">PB</span><span><b>Peak</b> Business</span></div>
         <div className="workspace-chip"><span className="status-dot" />Operations workspace</div>
         <nav aria-label="Primary navigation">{navItems.map((item) => <button key={item.id} data-tour={item.id} className={`nav-item ${view === item.id ? 'active' : ''}`} onClick={() => setView(item.id)}><span className="nav-glyph">{item.label.slice(0, 1)}</span><span><b>{item.label}</b><small>{item.eyebrow}</small></span></button>)}</nav>
-        <div className="sidebar-foot"><p>Data is protected by Supabase.</p><ThemeToggle showLabel /></div>
+        <div className="sidebar-foot"><p>Data is protected by Clerk + Supabase.</p><ThemeToggle showLabel /></div>
       </aside>
       <section className="main-stage">
-        <header className="topbar"><div className="mobile-brand"><span className="brand-mark">PB</span>Peak Business</div><div className="topbar-right"><button className="refresh" onClick={() => void refresh()} disabled={loading}>{loading ? 'Refreshing…' : '↻ Refresh'}</button>{isSignedIn ? <UserAvatar user={user} onSignOut={handleSignOut} /> : <AuthButtons onSignIn={handleSignIn} onSignUp={handleSignUp} />}</div></header>
+        <header className="topbar"><div className="mobile-brand"><span className="brand-mark">PB</span>Peak Business</div><div className="topbar-right"><button className="refresh" onClick={() => void refresh()} disabled={loading}>{loading ? 'Refreshing…' : '↻ Refresh'}</button><Show when="signed-in"><UserButton appearance={{ elements: { avatarBox: 'avatar-box' } }} /></Show><Show when="signed-out"><SignInButton><Button>Sign in</Button></SignInButton><SignUpButton><Button className="primary">Create account</Button></SignUpButton></Show></div></header>
         <div className="content-stage">
           {notice ? <div className="toast success">✓ {notice}</div> : null}
           {error ? <div className="toast error"><strong>Setup attention needed.</strong> {error}<button onClick={() => void refresh()}>Retry</button></div> : null}
-          {sessionLoading ? <div className="page-loader">Loading your workspace…</div> : null}
+          {!isLoaded ? <div className="page-loader">Loading your workspace…</div> : null}
           {view === 'overview' ? <Overview dashboard={dashboard} loading={loading} onQuickAdd={setComposer} onNavigate={setView} /> : null}
           {view === 'orders' ? <OrdersView dashboard={dashboard} onAdd={() => setComposer('order')} /> : null}
           {view === 'analytics' ? <AnalyticsView /> : null}
@@ -204,7 +155,7 @@ export function OperationsConsole() {
       {composer === 'purchase' ? <PurchaseForm materials={dashboard.materials || []} onClose={() => setComposer(null)} onComplete={completed} /> : null}
       {composer === 'expense' ? <ExpenseForm onClose={() => setComposer(null)} onComplete={completed} /> : null}
       {composer === 'borrowing' ? <BorrowingForm onClose={() => setComposer(null)} onComplete={completed} /> : null}
-      <ProductTour onNavigate={(value) => setView(value as View)} enabled={!sessionLoading} />
+      <ProductTour onNavigate={(value) => setView(value as View)} enabled={isLoaded} />
     </main>
   )
 }

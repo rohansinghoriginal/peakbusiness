@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { auth } from '@clerk/nextjs/server'
 
 import { env } from '@/lib/env'
 
@@ -21,50 +20,36 @@ export function getSupabaseAdmin() {
 
 /**
  * User-scoped client - respects RLS policies.
- * Uses Supabase SSR cookies for authentication.
+ * Uses Clerk session token for authentication.
  * Use this for ALL regular API routes.
  */
 export async function getSupabaseUser() {
-  const cookieStore = await cookies()
-
-  return createServerClient(
-    env.supabaseUrl,
-    env.supabaseAnonKey,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet: Array<{ name: string; value: string; options?: any }>) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-          }
-        },
+  const { getToken } = await auth()
+  const token = await getToken({ template: 'supabase' })
+  
+  if (!token) {
+    throw new Error('No Clerk session token available. User must be authenticated.')
+  }
+  
+  return createClient(env.supabaseUrl, env.supabaseAnonKey, {
+    global: {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-    })
+    },
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+      detectSessionInUrl: false,
+    },
+  })
 }
 
 /**
- * Get the current user ID from Supabase (for use in service_role queries)
+ * Get the current user ID from Clerk (for use in service_role queries that need manual filtering)
  */
 export async function getCurrentUserId(): Promise<string> {
-  const supabase = await getSupabaseUser()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('User not authenticated')
-  return user.id
-}
-
-/**
- * Get the current Supabase user object
- */
-export async function getCurrentUser() {
-  const supabase = await getSupabaseUser()
-  const { data: { user } } = await supabase.auth.getUser()
-  return user
+  const { userId } = await auth()
+  if (!userId) throw new Error('User not authenticated')
+  return userId
 }
